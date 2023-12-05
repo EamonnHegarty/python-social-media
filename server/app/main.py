@@ -1,5 +1,4 @@
-import os
-
+from app.models.post import UserPost, UserPostIn
 from fastapi import FastAPI
 
 # FROM root so you can see client & server
@@ -9,7 +8,21 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    print("hi")
-    return {"message": "hello world"}
+
+# dictionary for now as database
+post_table = {}
+
+
+@app.get("/post", response_model=list[UserPost])
+async def get_all_posts():
+   
+     return list(post_table.values())
+
+@app.post('/post', response_model=UserPost)
+async def create_post(post: UserPostIn):
+    data = post.model_dump()
+    last_record_id = len(post_table)
+    new_post = {**data, "id": last_record_id}
+    post_table[last_record_id] = new_post
+    
+    return new_post
