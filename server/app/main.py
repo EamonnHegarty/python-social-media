@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 
 # FROM root so you can see client & server
