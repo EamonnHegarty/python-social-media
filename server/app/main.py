@@ -1,4 +1,5 @@
-from app.models.post import UserPost, UserPostIn
+
+from app.routers.post import router as post_router
 from fastapi import FastAPI
 
 # FROM root so you can see client & server
@@ -6,23 +7,6 @@ from fastapi import FastAPI
 # source venv/Scripts/activate
 
 app = FastAPI()
+app.include_router(post_router)
 
 
-
-# dictionary for now as database
-post_table = {}
-
-
-@app.get("/post", response_model=list[UserPost])
-async def get_all_posts():
-   
-     return list(post_table.values())
-
-@app.post('/post', response_model=UserPost)
-async def create_post(post: UserPostIn):
-    data = post.model_dump()
-    last_record_id = len(post_table)
-    new_post = {**data, "id": last_record_id}
-    post_table[last_record_id] = new_post
-    
-    return new_post
