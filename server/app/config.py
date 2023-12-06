@@ -1,3 +1,5 @@
+# Most of this taken from Redowan Delowar's post on configurations with Pydantic
+# https://rednafi.github.io/digressions/python/2020/06/03/python-configs.html
 from functools import lru_cache
 from typing import Optional
 
@@ -6,7 +8,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class BaseConfig(BaseSettings):
     ENV_STATE: Optional[str] = None
-    model_config = SettingsConfigDict(env_file=".env")
+
+    """Loads the dotenv file. Including this is necessary to get
+    pydantic to load a .env file."""
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 class GlobalConfig(BaseConfig):
@@ -15,22 +20,23 @@ class GlobalConfig(BaseConfig):
 
 
 class DevConfig(GlobalConfig):
-    model_config = SettingsConfigDict(env_prefix="DEV_")
+    model_config = SettingsConfigDict(env_prefix="DEV_", extra="ignore")
 
 
 class ProdConfig(GlobalConfig):
-    model_config = SettingsConfigDict(env_prefix="PROD_")
+    model_config = SettingsConfigDict(env_prefix="PROD_", extra="ignore")
 
 
 class TestConfig(GlobalConfig):
     DATABASE_URL: str = "sqlite:///test.db"
-    DB_FORCE_ROLL_BACK: bool = False
+    DB_FORCE_ROLL_BACK: bool = True
 
-    model_config = SettingsConfigDict(env_prefix="TEST_")
+    model_config = SettingsConfigDict(env_prefix="TEST_", extra="ignore")
 
 
 @lru_cache()
 def get_config(env_state: str):
+    """Instantiate config based on the environment."""
     configs = {"dev": DevConfig, "prod": ProdConfig, "test": TestConfig}
     return configs[env_state]()
 
