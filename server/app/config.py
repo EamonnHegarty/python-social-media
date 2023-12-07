@@ -1,5 +1,3 @@
-# Most of this taken from Redowan Delowar's post on configurations with Pydantic
-# https://rednafi.github.io/digressions/python/2020/06/03/python-configs.html
 from functools import lru_cache
 from typing import Optional
 
