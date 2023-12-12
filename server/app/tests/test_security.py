@@ -1,5 +1,11 @@
 import pytest
+
 from app import security
+
+
+def test_password_hashes():
+    password = "password"
+    assert security.verify_password(password, security.get_password_hash(password))
 
 
 @pytest.mark.anyio
