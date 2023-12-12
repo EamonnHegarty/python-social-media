@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-
 from app.database import database
 from app.routers.post import router as post_router
+from app.routers.user import router as user_router
+from fastapi import FastAPI
 
 # FROM /server
 # uvicorn app.main:app --reload
@@ -21,3 +21,4 @@ app = FastAPI(lifespan=lifespan)
 
 
 app.include_router(post_router)
+app.include_router(user_router)
